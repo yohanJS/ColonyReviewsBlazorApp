@@ -1,0 +1,39 @@
+﻿@page "/all-blogs"
+@using ColonyReviewsBlazorApp.Models
+@inject HttpClient client
+
+<PageTitle>Blogs</PageTitle>
+
+@if (allBlogs == null)
+{
+    <p>Loading blogs....</p>
+}
+else
+{
+    @foreach (var blog in allBlogs)
+    {
+        <p>@blog.Title</p>
+    }
+}
+
+@code {
+    private List<BlogModel>? allBlogs = new List<BlogModel>();
+    private string url = "https://localhost:7011/BlogPost";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetBlogs();
+    }
+
+    private async Task GetBlogs()
+    {
+        try
+        {
+            allBlogs = await client.GetFromJsonAsync<List<BlogModel>>(url);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+}
